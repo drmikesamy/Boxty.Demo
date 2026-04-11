@@ -17,7 +17,6 @@ namespace Boxty.ServerApp.Modules.UserManagement.Entities
         public string Notes { get; set; } = string.Empty;
         public HashSet<Subject> Subjects { get; set; } = new();
         public Guid[] RelatedDocumentIds { get; set; } = Array.Empty<Guid>();
-        public Guid TenantId { get; set; }
         public string SearchTags { get; set; } = string.Empty;
     }
 }

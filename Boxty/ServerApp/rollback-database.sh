@@ -3,10 +3,6 @@
 # Navigate to the Server directory
 cd "$(dirname "$0")"
 
-# Option to rollback AuthDbContext
-echo "0. AuthDbContext (auth database)"
-echo
-
 # Collect all modules
 modules=()
 for module in Modules/*/Infrastructure; do
@@ -29,27 +25,20 @@ for i in "${!modules[@]}"; do
 done
 
 # Prompt the user to choose a module
-read -p "Enter the number of the module to rollback (or 0 for AuthDbContext): " choice
+read -p "Enter the number of the module to rollback: " choice
 
 # Validate the choice
-if [[ ! "$choice" =~ ^[0-9]+$ ]] || [[ "$choice" -lt 0 || "$choice" -gt ${#modules[@]} ]]; then
+if [[ ! "$choice" =~ ^[0-9]+$ ]] || [[ "$choice" -lt 1 || "$choice" -gt ${#modules[@]} ]]; then
     echo "Invalid choice."
     exit 1
 fi
 
-# Handle AuthDbContext (choice 0)
-if [[ "$choice" -eq 0 ]]; then
-    context_name="AuthDbContext"
-    project_path="$(pwd)/WebApi/WebApi.csproj"
-    migrations_dir="$(pwd)/WebApi/Database/Migrations"
-else
-    # Handle module selection
-    module="${modules[$((choice - 1))]}"
-    module_name=$(basename "$(dirname "$module")")
-    context_name="${module_name}DbContext"
-    project_path="$(pwd)/Modules/${module_name}/Infrastructure/ServerApp.Modules.${module_name}.Infrastructure.csproj"
-    migrations_dir="$(pwd)/Modules/${module_name}/Infrastructure/Database/Migrations"
-fi
+# Handle module selection
+module="${modules[$((choice - 1))]}"
+module_name=$(basename "$(dirname "$module")")
+context_name="${module_name}DbContext"
+project_path="$(pwd)/Modules/${module_name}/Infrastructure/Boxty.ServerApp.Modules.${module_name}.Infrastructure.csproj"
+migrations_dir="$(pwd)/Modules/${module_name}/Infrastructure/Database/Migrations"
 
 echo "Selected context: $context_name"
 echo

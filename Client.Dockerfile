@@ -11,12 +11,16 @@ RUN apt-get update && \
 COPY Boxty/ClientApp/ClientApp.sln ./Boxty/ClientApp/
 COPY ./Boxty/ClientApp/Boxty.ClientApp.csproj ./Boxty/ClientApp/
 COPY ./Boxty/SharedApp/Boxty.SharedApp.csproj ./Boxty/SharedApp/
+COPY ./Boxty/NuGet.Config ./Boxty/
+COPY ./nupkgs/ ./nupkgs/
 
 RUN dotnet workload install wasm-tools --skip-manifest-update && \
-    dotnet restore ./Boxty/ClientApp/Boxty.ClientApp.csproj
+    dotnet restore ./Boxty/ClientApp/Boxty.ClientApp.csproj --configfile ./Boxty/NuGet.Config
 COPY . .
+RUN find ./Boxty -type d \( -name bin -o -name obj \) -exec rm -rf {} + || true
 WORKDIR /app/Boxty/ClientApp/
-RUN dotnet publish "Boxty.ClientApp.csproj" -c $BUILD_CONFIGURATION -o /app/publish
+RUN dotnet restore "Boxty.ClientApp.csproj" --configfile /app/Boxty/NuGet.Config
+RUN dotnet publish "Boxty.ClientApp.csproj" -c $BUILD_CONFIGURATION -o /app/publish --no-restore
 
 FROM nginx:stable-perl
 WORKDIR /app

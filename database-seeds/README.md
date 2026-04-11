@@ -4,7 +4,6 @@ This directory contains SQL seed files that are automatically loaded into the Po
 
 ## Files
 
-- `chapp-seed.sql` - Seed data for the main application database
 - `keycloak-seed.sql` - Seed data for the Keycloak authentication database
 
 ## How It Works
@@ -18,9 +17,6 @@ The seed files are committed to version control, so anyone cloning the repositor
 To update the seed files with current database state:
 
 ```bash
-# Export main app database
-docker exec chapp.database pg_dump -U postgres -d postgres > database-seeds/chapp-seed.sql
-
 # Export keycloak database
 docker exec chkeycloak.database pg_dump -U keycloak -d keycloak > database-seeds/keycloak-seed.sql
 ```

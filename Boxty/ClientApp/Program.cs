@@ -1,5 +1,4 @@
 ﻿using Blazor.SubtleCrypto;
-using Blazored.LocalStorage;
 using Boxty.ClientApp.Configuration;
 using Boxty.ClientApp.RoleManagement;
 using Boxty.ClientBase.Services;
@@ -9,12 +8,12 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor;
 using MudBlazor.Services;
 using Boxty.SharedApp.DTOs.UserManagement;
-using Boxty.SharedApp.DTOs.Calendar;
 using FluentValidation;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Boxty.SharedApp.Validators;
 using Boxty.ClientApp;
+using Boxty.SharedBase.DTOs.Auth;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -75,7 +74,6 @@ builder.Services.AddOidcAuthentication(options =>
 
 builder.Services.AddMudServices();
 MudGlobal.InputDefaults.Variant = Variant.Outlined;
-builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddSubtleCrypto();
 
 // Register FluentValidation validators so they can be injected in Blazor components
@@ -88,11 +86,10 @@ builder.Services.AddScoped<ICrudService<TenantDocumentDto>, CrudService<TenantDo
 builder.Services.AddScoped<ICrudService<SubjectDocumentDto>, CrudService<SubjectDocumentDto>>();
 builder.Services.AddScoped<ICrudService<TenantNoteDto>, CrudService<TenantNoteDto>>();
 builder.Services.AddScoped<ICrudService<SubjectNoteDto>, CrudService<SubjectNoteDto>>();
-builder.Services.AddScoped<ICrudService<AppointmentDto>, CrudService<AppointmentDto>>();
+builder.Services.AddScoped<ICrudService<RoleDto>, CrudService<RoleDto>>();
 
 builder.Services.AddScoped<IDocumentUploadService, DocumentUploadService>();
 builder.Services.AddScoped<IAuthHelperService, AuthHelperService>();
-builder.Services.AddScoped<ILocalBackupService, LocalBackupService>();
 builder.Services.AddScoped<GlobalStateService>();
 
 var culture = new System.Globalization.CultureInfo(cultureOptions.DefaultCulture);

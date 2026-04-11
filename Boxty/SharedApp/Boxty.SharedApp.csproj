@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Boxty.SharedBase" Version="1.0.2" />
+    <PackageReference Include="Boxty.SharedBase" Version="1.0.*" />
   </ItemGroup>
 
 </Project>

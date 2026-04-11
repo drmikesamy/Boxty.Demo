@@ -9,14 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{0060
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boxty.ServerApp.Modules.Shared", "Modules\Shared\Boxty.ServerApp.Modules.Shared.csproj", "{9111D13C-CC69-4532-9025-A893F1E1ABBB}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Auth", "Auth", "{78ABC75C-A4D8-4250-87B6-B043AD7B83F6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boxty.ServerApp.Modules.Auth.Endpoints", "Modules\Auth\Endpoints\Boxty.ServerApp.Modules.Auth.Endpoints.csproj", "{409B0951-75FC-451E-A1AF-903A59D61AFF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boxty.ServerApp.Modules.Auth.Entities", "Modules\Auth\Entities\Boxty.ServerApp.Modules.Auth.Entities.csproj", "{89C12C33-4FC2-4FF7-B7E6-DE3EA37EFD74}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boxty.ServerApp.Modules.Auth.Infrastructure", "Modules\Auth\Infrastructure\Boxty.ServerApp.Modules.Auth.Infrastructure.csproj", "{E5A280B8-3575-43A6-85C3-5149DB3D3768}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UserManagement", "UserManagement", "{C85ACE71-FAF3-4F04-8554-2F6F4BF147C1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boxty.ServerApp.Modules.UserManagement.Endpoints", "Modules\UserManagement\Endpoints\Boxty.ServerApp.Modules.UserManagement.Endpoints.csproj", "{1F36FCC8-2220-4F4A-9E58-44923113DCDC}"
@@ -29,25 +21,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boxty.ServerApp.Modules.Use
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boxty.ServerApp.Modules.UserManagement.Application", "Modules\UserManagement\Application\Boxty.ServerApp.Modules.UserManagement.Application.csproj", "{28390F77-D2E0-4737-AF0C-959C4AEC940B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Calendar", "Calendar", "{72119934-72D4-47E3-B9EF-99E7E0C9CB3C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boxty.ServerApp.Modules.Calendar.Endpoints", "Modules\Calendar\Endpoints\Boxty.ServerApp.Modules.Calendar.Endpoints.csproj", "{B531332A-652C-454A-8EB8-8130AC98E296}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boxty.ServerApp.Modules.Calendar.Services", "Modules\Calendar\Services\Boxty.ServerApp.Modules.Calendar.Services.csproj", "{ACAAFDFD-6FAA-4E29-A08E-CFE43937528C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boxty.ServerApp.Modules.Calendar.Entities", "Modules\Calendar\Entities\Boxty.ServerApp.Modules.Calendar.Entities.csproj", "{0C2A2E74-9541-4DE1-9AB1-3E706231762E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boxty.ServerApp.Modules.Calendar.Infrastructure", "Modules\Calendar\Infrastructure\Boxty.ServerApp.Modules.Calendar.Infrastructure.csproj", "{842F785B-4920-4254-B13F-64131278DB70}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boxty.ServerApp.Modules.Calendar.Application", "Modules\Calendar\Application\Boxty.ServerApp.Modules.Calendar.Application.csproj", "{F4243836-2178-4E37-A010-8962B720869A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{E2745288-8E6F-42A7-92AB-A5C71FCBC54D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -58,18 +35,6 @@ Global
 		{9111D13C-CC69-4532-9025-A893F1E1ABBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9111D13C-CC69-4532-9025-A893F1E1ABBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9111D13C-CC69-4532-9025-A893F1E1ABBB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{409B0951-75FC-451E-A1AF-903A59D61AFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{409B0951-75FC-451E-A1AF-903A59D61AFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{409B0951-75FC-451E-A1AF-903A59D61AFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{409B0951-75FC-451E-A1AF-903A59D61AFF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{89C12C33-4FC2-4FF7-B7E6-DE3EA37EFD74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{89C12C33-4FC2-4FF7-B7E6-DE3EA37EFD74}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{89C12C33-4FC2-4FF7-B7E6-DE3EA37EFD74}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{89C12C33-4FC2-4FF7-B7E6-DE3EA37EFD74}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E5A280B8-3575-43A6-85C3-5149DB3D3768}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E5A280B8-3575-43A6-85C3-5149DB3D3768}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E5A280B8-3575-43A6-85C3-5149DB3D3768}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E5A280B8-3575-43A6-85C3-5149DB3D3768}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1F36FCC8-2220-4F4A-9E58-44923113DCDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1F36FCC8-2220-4F4A-9E58-44923113DCDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F36FCC8-2220-4F4A-9E58-44923113DCDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -90,44 +55,17 @@ Global
 		{28390F77-D2E0-4737-AF0C-959C4AEC940B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28390F77-D2E0-4737-AF0C-959C4AEC940B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28390F77-D2E0-4737-AF0C-959C4AEC940B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B531332A-652C-454A-8EB8-8130AC98E296}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B531332A-652C-454A-8EB8-8130AC98E296}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B531332A-652C-454A-8EB8-8130AC98E296}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B531332A-652C-454A-8EB8-8130AC98E296}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ACAAFDFD-6FAA-4E29-A08E-CFE43937528C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ACAAFDFD-6FAA-4E29-A08E-CFE43937528C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ACAAFDFD-6FAA-4E29-A08E-CFE43937528C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ACAAFDFD-6FAA-4E29-A08E-CFE43937528C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0C2A2E74-9541-4DE1-9AB1-3E706231762E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0C2A2E74-9541-4DE1-9AB1-3E706231762E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0C2A2E74-9541-4DE1-9AB1-3E706231762E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0C2A2E74-9541-4DE1-9AB1-3E706231762E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{842F785B-4920-4254-B13F-64131278DB70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{842F785B-4920-4254-B13F-64131278DB70}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{842F785B-4920-4254-B13F-64131278DB70}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{842F785B-4920-4254-B13F-64131278DB70}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F4243836-2178-4E37-A010-8962B720869A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F4243836-2178-4E37-A010-8962B720869A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F4243836-2178-4E37-A010-8962B720869A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F4243836-2178-4E37-A010-8962B720869A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9111D13C-CC69-4532-9025-A893F1E1ABBB} = {00606C98-4043-49CB-BCB8-CE277D8D1EC4}
-		{78ABC75C-A4D8-4250-87B6-B043AD7B83F6} = {00606C98-4043-49CB-BCB8-CE277D8D1EC4}
-		{409B0951-75FC-451E-A1AF-903A59D61AFF} = {78ABC75C-A4D8-4250-87B6-B043AD7B83F6}
-		{89C12C33-4FC2-4FF7-B7E6-DE3EA37EFD74} = {78ABC75C-A4D8-4250-87B6-B043AD7B83F6}
-		{E5A280B8-3575-43A6-85C3-5149DB3D3768} = {78ABC75C-A4D8-4250-87B6-B043AD7B83F6}
 		{C85ACE71-FAF3-4F04-8554-2F6F4BF147C1} = {00606C98-4043-49CB-BCB8-CE277D8D1EC4}
 		{1F36FCC8-2220-4F4A-9E58-44923113DCDC} = {C85ACE71-FAF3-4F04-8554-2F6F4BF147C1}
 		{12766C05-FB5F-4F26-A082-3C54744B4CBC} = {C85ACE71-FAF3-4F04-8554-2F6F4BF147C1}
 		{A00DD682-DC02-4A63-A19D-EFBD23ACCDD4} = {C85ACE71-FAF3-4F04-8554-2F6F4BF147C1}
 		{A160C756-EF3A-446C-9C72-11112A034B48} = {C85ACE71-FAF3-4F04-8554-2F6F4BF147C1}
 		{28390F77-D2E0-4737-AF0C-959C4AEC940B} = {C85ACE71-FAF3-4F04-8554-2F6F4BF147C1}
-		{72119934-72D4-47E3-B9EF-99E7E0C9CB3C} = {00606C98-4043-49CB-BCB8-CE277D8D1EC4}
-		{B531332A-652C-454A-8EB8-8130AC98E296} = {72119934-72D4-47E3-B9EF-99E7E0C9CB3C}
-		{ACAAFDFD-6FAA-4E29-A08E-CFE43937528C} = {72119934-72D4-47E3-B9EF-99E7E0C9CB3C}
-		{0C2A2E74-9541-4DE1-9AB1-3E706231762E} = {72119934-72D4-47E3-B9EF-99E7E0C9CB3C}
-		{842F785B-4920-4254-B13F-64131278DB70} = {72119934-72D4-47E3-B9EF-99E7E0C9CB3C}
-		{F4243836-2178-4E37-A010-8962B720869A} = {72119934-72D4-47E3-B9EF-99E7E0C9CB3C}
 	EndGlobalSection
 EndGlobal

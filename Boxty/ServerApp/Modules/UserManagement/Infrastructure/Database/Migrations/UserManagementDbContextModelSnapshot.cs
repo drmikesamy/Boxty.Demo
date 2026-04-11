@@ -23,12 +23,99 @@ namespace Boxty.ServerApp.Modules.UserManagement.Infrastructure.Database.Migrati
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Boxty.ServerApp.Modules.UserManagement.Entities.Permission", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("CreatedById")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("LastModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("ModifiedById")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("SubjectId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Permissions", "usermanagement");
+                });
+
+            modelBuilder.Entity("Boxty.ServerApp.Modules.UserManagement.Entities.Role", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("CreatedById")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("LastModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("ModifiedById")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("SubjectId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles", "usermanagement");
+                });
+
             modelBuilder.Entity("Boxty.ServerApp.Modules.UserManagement.Entities.Subject", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Address1")
                         .IsRequired()
@@ -128,41 +215,13 @@ namespace Boxty.ServerApp.Modules.UserManagement.Infrastructure.Database.Migrati
                     b.HasIndex("TenantId");
 
                     b.ToTable("Subjects", "usermanagement");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("de8d2617-58f1-4965-a523-811e2f1a1eec"),
-                            Address1 = "",
-                            AvatarImageGuid = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedBy = "System",
-                            CreatedById = new Guid("de8d2617-58f1-4965-a523-811e2f1a1eec"),
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Email = "admin@boxty.org",
-                            FirstName = "Admin",
-                            IsActive = true,
-                            LastModifiedBy = "System",
-                            LastName = "User",
-                            ModifiedById = new Guid("de8d2617-58f1-4965-a523-811e2f1a1eec"),
-                            ModifiedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Notes = "Root administrator",
-                            Postcode = "",
-                            RelatedDocumentIds = new Guid[0],
-                            RoleName = "Administrator",
-                            SearchTags = "",
-                            SubjectId = new Guid("de8d2617-58f1-4965-a523-811e2f1a1eec"),
-                            Telephone = "",
-                            TenantId = new Guid("c1e30e05-0655-42b6-9e4f-32310eb650c8"),
-                            Username = "admin"
-                        });
                 });
 
             modelBuilder.Entity("Boxty.ServerApp.Modules.UserManagement.Entities.SubjectDocument", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("BlobContainerName")
                         .IsRequired()
@@ -224,8 +283,7 @@ namespace Boxty.ServerApp.Modules.UserManagement.Infrastructure.Database.Migrati
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -271,8 +329,7 @@ namespace Boxty.ServerApp.Modules.UserManagement.Infrastructure.Database.Migrati
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Address")
                         .IsRequired()
@@ -346,39 +403,13 @@ namespace Boxty.ServerApp.Modules.UserManagement.Infrastructure.Database.Migrati
                     b.HasKey("Id");
 
                     b.ToTable("Tenants", "usermanagement");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("c1e30e05-0655-42b6-9e4f-32310eb650c8"),
-                            Address = "",
-                            CreatedBy = "System",
-                            CreatedById = new Guid("de8d2617-58f1-4965-a523-811e2f1a1eec"),
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Domain = "boxty.org",
-                            Email = "admin@boxty.org",
-                            IsActive = true,
-                            LastModifiedBy = "System",
-                            ModifiedById = new Guid("de8d2617-58f1-4965-a523-811e2f1a1eec"),
-                            ModifiedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Name = "Boxty",
-                            Notes = "Root tenant organization",
-                            Postcode = "",
-                            RelatedDocumentIds = new Guid[0],
-                            SearchTags = "",
-                            SubjectId = new Guid("de8d2617-58f1-4965-a523-811e2f1a1eec"),
-                            Telephone = "",
-                            TenantId = new Guid("c1e30e05-0655-42b6-9e4f-32310eb650c8"),
-                            Website = "https://boxty.org"
-                        });
                 });
 
             modelBuilder.Entity("Boxty.ServerApp.Modules.UserManagement.Entities.TenantDocument", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("BlobContainerName")
                         .IsRequired()
@@ -440,8 +471,7 @@ namespace Boxty.ServerApp.Modules.UserManagement.Infrastructure.Database.Migrati
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -483,6 +513,21 @@ namespace Boxty.ServerApp.Modules.UserManagement.Infrastructure.Database.Migrati
                     b.ToTable("TenantNotes", "usermanagement");
                 });
 
+            modelBuilder.Entity("PermissionRole", b =>
+                {
+                    b.Property<Guid>("PermissionsId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RolesId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("PermissionsId", "RolesId");
+
+                    b.HasIndex("RolesId");
+
+                    b.ToTable("PermissionRole", "usermanagement");
+                });
+
             modelBuilder.Entity("Boxty.ServerApp.Modules.UserManagement.Entities.Subject", b =>
                 {
                     b.HasOne("Boxty.ServerApp.Modules.UserManagement.Entities.Tenant", null)
@@ -512,6 +557,21 @@ namespace Boxty.ServerApp.Modules.UserManagement.Infrastructure.Database.Migrati
                         .IsRequired();
 
                     b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("PermissionRole", b =>
+                {
+                    b.HasOne("Boxty.ServerApp.Modules.UserManagement.Entities.Permission", null)
+                        .WithMany()
+                        .HasForeignKey("PermissionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Boxty.ServerApp.Modules.UserManagement.Entities.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RolesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Boxty.ServerApp.Modules.UserManagement.Entities.Tenant", b =>

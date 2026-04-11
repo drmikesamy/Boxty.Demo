@@ -35,7 +35,6 @@ services:
       - "5437:5432"
     volumes:
       - chapp-db:/var/lib/postgresql/data
-      - ./database-seeds/chapp-seed.sql:/docker-entrypoint-initdb.d/chapp-seed.sql:ro
 
   chkeycloak.database:
     container_name: chkeycloak.database

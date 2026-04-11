@@ -12,16 +12,12 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-    <PackageReference Include="Boxty.ServerBase" Version="1.0.2" />
+    <PackageReference Include="Boxty.ServerBase" Version="1.0.*" />
 	</ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Modules\Auth\Infrastructure\Boxty.ServerApp.Modules.Auth.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\UserManagement\Infrastructure\Boxty.ServerApp.Modules.UserManagement.Infrastructure.csproj" />
-    <ProjectReference Include="..\Modules\Calendar\Infrastructure\Boxty.ServerApp.Modules.Calendar.Infrastructure.csproj" />
-    <ProjectReference Include="..\Modules\Auth\Endpoints\Boxty.ServerApp.Modules.Auth.Endpoints.csproj" />
     <ProjectReference Include="..\Modules\UserManagement\Endpoints\Boxty.ServerApp.Modules.UserManagement.Endpoints.csproj" />
-    <ProjectReference Include="..\Modules\Calendar\Endpoints\Boxty.ServerApp.Modules.Calendar.Endpoints.csproj" />
   </ItemGroup>
 
 </Project>

@@ -6,17 +6,6 @@ namespace Boxty.ServerApp.Modules.UserManagement.Entities
     public class TenantNote : BaseEntity<TenantNote>, IEntity
     {
         public required string Content { get; set; }
-        public virtual Tenant Tenant { get; set; }
-        public Guid TenantId
-        {
-            get
-            {
-                return TenantId;
-            }
-            set
-            {
-                TenantId = value;
-            }
-        }
+        public virtual Tenant Tenant { get; set; } = null!;
     }
 }

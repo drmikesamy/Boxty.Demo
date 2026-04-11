@@ -7,9 +7,12 @@
 @using Boxty.ClientBase.Services
 @using Boxty.SharedBase.DTOs.Auth
 @using Boxty.SharedApp.Enums
+@using Boxty.SharedApp.Extensions
 @using MudBlazor
+@using System.Net.Http.Json
 
 @inject IAuthHelperService AuthHelperService
+@inject HttpClient Http
 
 <MudGrid>
     <MudItem xs="12" sm="6">
@@ -37,6 +40,15 @@
     <MudItem xs="12" sm="6">
         <MudTextField @bind-Value="Model.Telephone" For="@(() => Model.Telephone)" Label="Telephone"
             Variant="Variant.Outlined" />
+        @if (canEditRole)
+        {
+            <MudSelect T="string" @bind-Value="Model.RoleName" Label="Role" Variant="Variant.Outlined">
+                @foreach (var role in assignableRoles)
+                {
+                    <MudSelectItem T="string" Value="@role.Name">@role.GetAuthDisplayName()</MudSelectItem>
+                }
+            </MudSelect>
+        }
         <LazyLookup TDto="TenantDto"
             FieldType="FormMode == FormModeEnum.Create && (Tenant == null || Tenant.Id == Guid.Empty) ? LazyLookupEnum.Search : LazyLookupEnum.ReadOnly"
             @bind-ItemId="Model.TenantId" Label="Tenant Name" For="@(() => Model.TenantId)" />
@@ -50,11 +62,55 @@
     [CascadingParameter(Name = "Tenant")] public ITenant Tenant { get; set; } = default!;
     [CascadingParameter(Name = "Subject")] public ISubject Subject { get; set; } = default!;
     public RenderFragment CustomButtons = @<SubjectCrudButtons T="SubjectDto" />;
-    protected override void OnInitialized()
+    private List<RoleDto> assignableRoles = new();
+    private bool canEditRole;
+
+    protected override async Task OnInitializedAsync()
     {
         if (FormMode == FormModeEnum.Create || Model.TenantId == Guid.Empty)
         {
             Model.TenantId = Tenant?.Id ?? Guid.Empty;
         }
+
+        var isAdministrator = await AuthHelperService.IsUserInRole("administrator");
+        var isTenantAdministrator = await AuthHelperService.IsUserInRole("tenantadministrator");
+        var isTenantLimitedAdministrator = await AuthHelperService.IsUserInRole("tenantlimitedadministrator");
+
+        canEditRole = isAdministrator || isTenantAdministrator || isTenantLimitedAdministrator;
+        if (!canEditRole)
+        {
+            return;
+        }
+
+        var roles = await Http.GetFromJsonAsync<List<RoleDto>>("api/Role/GetAll") ?? new List<RoleDto>();
+        assignableRoles = roles
+            .Where(role => CanAssignRole(role.Name, isAdministrator, isTenantAdministrator, isTenantLimitedAdministrator))
+            .OrderBy(role => role.GetAuthDisplayName())
+            .ToList();
+
+        if (string.IsNullOrWhiteSpace(Model.RoleName))
+        {
+            Model.RoleName = assignableRoles.FirstOrDefault(role => string.Equals(role.Name, "subject", StringComparison.OrdinalIgnoreCase))?.Name
+                ?? assignableRoles.FirstOrDefault()?.Name
+                ?? "subject";
+        }
+    }
+
+    private static bool CanAssignRole(string roleName, bool isAdministrator, bool isTenantAdministrator, bool isTenantLimitedAdministrator)
+    {
+        var normalizedRoleName = roleName?.Trim().ToLowerInvariant() ?? string.Empty;
+
+        if (isAdministrator)
+        {
+            return true;
+        }
+
+        return normalizedRoleName switch
+        {
+            "administrator" => false,
+            "tenantadministrator" => isTenantAdministrator,
+            "tenantlimitedadministrator" => isTenantAdministrator || isTenantLimitedAdministrator,
+            _ => true
+        };
     }
 }

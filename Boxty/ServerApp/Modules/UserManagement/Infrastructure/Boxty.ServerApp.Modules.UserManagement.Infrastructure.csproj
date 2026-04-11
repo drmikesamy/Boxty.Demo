@@ -10,7 +10,10 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\SharedApp\Boxty.SharedApp.csproj" />
     <ProjectReference Include="..\Entities\Boxty.ServerApp.Modules.UserManagement.Entities.csproj" />
+    <ProjectReference Include="..\Services\Boxty.ServerApp.Modules.UserManagement.Services.csproj" />
     <ProjectReference Include="..\..\Shared\Boxty.ServerApp.Modules.Shared.csproj" />
-  <PackageReference Include="Boxty.ServerBase" Version="1.0.2" /></ItemGroup>
+    <PackageReference Include="Boxty.SharedBase" Version="1.0.*" />
+    <PackageReference Include="Boxty.ServerBase" Version="1.0.*" />
+  </ItemGroup>
 
 </Project>

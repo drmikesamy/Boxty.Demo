@@ -3,10 +3,6 @@
 # Navigate to the Server directory
 cd "$(dirname "$0")"
 
-# Option to migrate AuthDbContext
-echo "0. AuthDbContext (auth database)"
-echo
-
 # Collect all modules
 modules=()
 for module in Modules/*/Infrastructure; do
@@ -32,7 +28,7 @@ done
 read -p "Enter the number of the module to migrate: " choice
 
 # Validate the choice
-if [[ -n "$choice" && ! "$choice" =~ ^[0-9]+$ ]] || [[ "$choice" -lt 1 || "$choice" -gt ${#modules[@]} ]]; then
+if [[ ! "$choice" =~ ^[0-9]+$ ]] || [[ "$choice" -lt 1 || "$choice" -gt ${#modules[@]} ]]; then
     echo "Invalid choice."
     exit 1
 fi

@@ -21,8 +21,6 @@ namespace Boxty.ServerApp.Modules.UserManagement.Entities
         public required string Postcode { get; set; }
         public string Notes { get; set; } = string.Empty;
         public Guid[] RelatedDocumentIds { get; set; } = Array.Empty<Guid>();
-        public Guid SubjectId { get; set; }
-        public Guid TenantId { get; set; }
         public string SearchTags { get; set; } = string.Empty;
         public string? RoleName { get; set; }
     }

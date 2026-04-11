@@ -1,13 +1,10 @@
 ﻿using Boxty.ServerBase.Extensions;
-using Boxty.ServerBase.Modules;
-using Boxty.ServerApp.Modules.Auth.Infrastructure;
 using Boxty.ServerApp.Modules.UserManagement.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var moduleTypes = new List<Type>
 {
-    typeof(AuthModule),
     typeof(UserManagementModule)
 };
 

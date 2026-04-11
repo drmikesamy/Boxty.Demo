@@ -2,6 +2,30 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Attach to chapp.server",
+            "type": "coreclr",
+            "request": "attach",
+            "processId": "${command:pickRemoteProcess}",
+            "justMyCode": true,
+            "requireExactSource": false,
+            "sourceFileMap": {
+                "/app/Boxty/ServerApp": "${workspaceFolder}/Boxty/ServerApp",
+                "/app/Boxty/SharedApp": "${workspaceFolder}/Boxty/SharedApp",
+                "/app": "${workspaceFolder}"
+            },
+            "pipeTransport": {
+                "pipeCwd": "${workspaceFolder}",
+                "pipeProgram": "docker",
+                "pipeArgs": [
+                    "exec",
+                    "-i",
+                    "chapp.server"
+                ],
+                "debuggerPath": "/vsdbg/vsdbg",
+                "quoteArgs": false
+            }
+        },
+        {
             "name": "Attach to Chrome",
             "request": "attach",
             "type": "chrome",

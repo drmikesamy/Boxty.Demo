@@ -11,13 +11,15 @@ RUN if [ "$INCLUDE_DEBUGGER" = "true" ]; then \
         && curl -sSL https://aka.ms/getvsdbgsh | /bin/sh /dev/stdin -v latest -l /vsdbg; \
     fi
 
+COPY Boxty/NuGet.Config ./Boxty/
+COPY nupkgs/ ./nupkgs/
 COPY Boxty/ServerApp/ ./Boxty/ServerApp/
 COPY Boxty/SharedApp/ ./Boxty/SharedApp/
 RUN find ./Boxty -type d \( -name bin -o -name obj \) -exec rm -rf {} + || true
 
 WORKDIR /app/Boxty/ServerApp
-RUN dotnet restore ServerApp.sln
-RUN dotnet publish WebApi/WebApi.csproj -c $BUILD_CONFIGURATION -o /app/publish
+RUN dotnet restore ServerApp.sln --configfile /app/Boxty/NuGet.Config
+RUN dotnet publish WebApi/WebApi.csproj -c $BUILD_CONFIGURATION -o /app/publish --no-restore
 
 # Runtime image - use SDK for debugging capabilities
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS runtime
