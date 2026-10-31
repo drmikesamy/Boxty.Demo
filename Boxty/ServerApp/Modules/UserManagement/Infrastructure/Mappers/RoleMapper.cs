@@ -39,16 +39,6 @@ namespace Boxty.ServerApp.Modules.UserManagement.Infrastructure.Mappers
             };
         }
 
-        public IEnumerable<RoleDto> Map(IEnumerable<Role> entities, ClaimsPrincipal? user = null)
-        {
-            return entities.Select(entity => Map(entity, user));
-        }
-
-        public IEnumerable<Role> Map(IEnumerable<RoleDto> dtos, ClaimsPrincipal? user = null)
-        {
-            return dtos.Select(dto => Map(dto, user)).ToList();
-        }
-
         public void Map(RoleDto dto, Role entity, ClaimsPrincipal? user = null)
         {
             entity.Name = dto.Name;

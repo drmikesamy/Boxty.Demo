@@ -25,7 +25,7 @@ namespace Boxty.ServerApp.Modules.UserManagement.Infrastructure.Queries
                 .AsNoTracking()
                 .ToListAsync();
 
-            return _mapper.Map(roles).ToList();
+            return roles.Select(r => _mapper.Map(r)).ToList();
         }
     }
 }

@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Boxty",
+  "classifications": ["Code", "C#", "Boxty"],
+  "name": "Boxty Entity",
+  "identity": "Boxty.Entity",
+  "shortName": "boxty-entity",
+  "tags": {
+    "language": "C#",
+    "type": "item"
+  },
+  "symbols": {
+    "moduleName": {
+      "type": "parameter",
+      "datatype": "text",
+      "isRequired": true,
+      "replaces": "BoxtyModuleTemplate",
+      "fileRename": "BoxtyModuleTemplate"
+    },
+    "entityName": {
+      "type": "parameter",
+      "datatype": "text",
+      "isRequired": true,
+      "replaces": "BoxtyEntityTemplate",
+      "fileRename": "BoxtyEntityTemplate"
+    }
+  }
+}

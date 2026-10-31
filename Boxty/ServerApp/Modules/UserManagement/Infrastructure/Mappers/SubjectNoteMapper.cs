@@ -37,16 +37,6 @@ namespace Boxty.ServerApp.Modules.UserManagement.Infrastructure.Mappers
             };
         }
 
-        public IEnumerable<SubjectNoteDto> Map(IEnumerable<SubjectNote> entities, ClaimsPrincipal? user = null)
-        {
-            return entities.Select(entity => Map(entity, user));
-        }
-
-        public IEnumerable<SubjectNote> Map(IEnumerable<SubjectNoteDto> dtos, ClaimsPrincipal? user = null)
-        {
-            return dtos.Select(dto => Map(dto, user));
-        }
-
         public void Map(SubjectNoteDto dto, SubjectNote entity, ClaimsPrincipal? user = null)
         {
             entity.Id = dto.Id;

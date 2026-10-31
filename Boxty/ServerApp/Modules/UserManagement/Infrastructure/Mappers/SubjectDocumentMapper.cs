@@ -43,16 +43,6 @@ namespace Boxty.ServerApp.Modules.UserManagement.Infrastructure.Mappers
             };
         }
 
-        public IEnumerable<SubjectDocumentDto> Map(IEnumerable<SubjectDocument> entities, ClaimsPrincipal? user = null)
-        {
-            return entities.Select(entity => Map(entity, user));
-        }
-
-        public IEnumerable<SubjectDocument> Map(IEnumerable<SubjectDocumentDto> dtos, ClaimsPrincipal? user = null)
-        {
-            return dtos.Select(dto => Map(dto, user));
-        }
-
         public void Map(SubjectDocumentDto dto, SubjectDocument entity, ClaimsPrincipal? user = null)
         {
             entity.Id = dto.Id;
@@ -79,26 +69,6 @@ namespace Boxty.ServerApp.Modules.UserManagement.Infrastructure.Mappers
             dto.SubjectDocumentType = entity.SubjectDocumentType;
             dto.SubjectId = entity.SubjectId;
             dto.TenantId = entity.TenantId;
-        }
-
-        public void Map(IEnumerable<SubjectDocumentDto> dtos, IEnumerable<SubjectDocument> entities, ClaimsPrincipal? user = null)
-        {
-            var dtosArray = dtos.ToArray();
-            var entitiesArray = entities.ToArray();
-            for (int i = 0; i < Math.Min(dtosArray.Length, entitiesArray.Length); i++)
-            {
-                Map(dtosArray[i], entitiesArray[i]);
-            }
-        }
-
-        public void Map(IEnumerable<SubjectDocument> entities, IEnumerable<SubjectDocumentDto> dtos, ClaimsPrincipal? user = null)
-        {
-            var dtosArray = dtos.ToArray();
-            var entitiesArray = entities.ToArray();
-            for (int i = 0; i < Math.Min(dtosArray.Length, entitiesArray.Length); i++)
-            {
-                Map(entitiesArray[i], dtosArray[i]);
-            }
         }
     }
 }

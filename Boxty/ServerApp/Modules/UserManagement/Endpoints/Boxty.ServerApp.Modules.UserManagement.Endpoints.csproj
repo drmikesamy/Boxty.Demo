@@ -11,7 +11,7 @@
     <ProjectReference Include="..\..\..\..\SharedApp\Boxty.SharedApp.csproj" />
     <ProjectReference Include="..\Entities\Boxty.ServerApp.Modules.UserManagement.Entities.csproj" />
     <ProjectReference Include="..\Infrastructure\Boxty.ServerApp.Modules.UserManagement.Infrastructure.csproj" />
-    <PackageReference Include="Boxty.ServerBase" Version="1.0.*" />
+    <PackageReference Include="Boxty.ServerBase" Version="1.0.6" />
   </ItemGroup>
 
 </Project>

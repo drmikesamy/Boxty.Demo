@@ -283,12 +283,30 @@ def dto_line(prop):
     return f"        {prop['access']}{required_part} {type_name} {prop['name']} {{ get; {prop['accessor']}; }}"
 
 
+def collection_mapper_expression(prop, direction: str):
+    type_name = prop['type']
+    for prefix in ('List<', 'IList<', 'ICollection<', 'HashSet<', 'IEnumerable<'):
+        if type_name.startswith(prefix):
+            item_type = type_name[len(prefix):-1].strip()
+            if re.fullmatch(r'[A-Z][A-Za-z0-9_]*', item_type):
+                mapper_name = f"{item_type}Mapper"
+                if direction == 'dto':
+                    return f"entity.{prop['name']}.Select(item => new {mapper_name}().Map(item, user)).ToList()"
+                return f"dto.{prop['name']}.Select(item => new {mapper_name}().Map(item, user)).ToList()"
+    return None
+
+
 def dto_property_value(prop):
     type_name = prop['type']
     if type_name.startswith('FrozenDictionary<'):
         value_type = split_generic_args(type_name[len('FrozenDictionary<'):-1])[1]
-        dto_value_type = map_type_name(value_type, True)
-        return f"entity.{prop['name']}.ToFrozenDictionary(kvp => kvp.Key, kvp => kvp.Value == null ? null : new {dto_value_type} {{ Name = kvp.Value.Name, DataType = kvp.Value.DataType, IsPrimaryKey = kvp.Value.IsPrimaryKey }})"
+        mapper_type = map_type_name(value_type, False)
+        if re.fullmatch(r'[A-Z][A-Za-z0-9_]*', mapper_type):
+            return f"entity.{prop['name']}.Where(kvp => kvp.Value is not null).ToFrozenDictionary(kvp => kvp.Key, kvp => new {mapper_type}Mapper().Map(kvp.Value!, user))"
+        return f"entity.{prop['name']}"
+    collection_expression = collection_mapper_expression(prop, 'dto')
+    if collection_expression is not None:
+        return collection_expression
     return f"entity.{prop['name']}"
 
 
@@ -296,8 +314,13 @@ def entity_property_value(prop):
     type_name = prop['type']
     if type_name.startswith('FrozenDictionary<'):
         value_type = split_generic_args(type_name[len('FrozenDictionary<'):-1])[1]
-        dto_value_type = map_type_name(value_type, True)
-        return f"dto.{prop['name']}.ToFrozenDictionary(kvp => kvp.Key, kvp => kvp.Value == null ? null : new {value_type} {{ Name = kvp.Value.Name, DataType = kvp.Value.DataType, IsPrimaryKey = kvp.Value.IsPrimaryKey }})"
+        mapper_type = map_type_name(value_type, False)
+        if re.fullmatch(r'[A-Z][A-Za-z0-9_]*', mapper_type):
+            return f"dto.{prop['name']}.Where(kvp => kvp.Value is not null).ToFrozenDictionary(kvp => kvp.Key, kvp => new {mapper_type}Mapper().Map(kvp.Value!, user))"
+        return f"dto.{prop['name']}"
+    collection_expression = collection_mapper_expression(prop, 'entity')
+    if collection_expression is not None:
+        return collection_expression
     return f"dto.{prop['name']}"
 
 

@@ -35,21 +35,10 @@ namespace Boxty.ServerApp.Modules.UserManagement.Infrastructure.Mappers
             };
         }
 
-        public IEnumerable<TenantNoteDto> Map(IEnumerable<TenantNote> entities, ClaimsPrincipal? user = null)
-        {
-            return entities.Select(entity => Map(entity, user));
-        }
-
-        public IEnumerable<TenantNote> Map(IEnumerable<TenantNoteDto> dtos, ClaimsPrincipal? user = null)
-        {
-            return dtos.Select(dto => Map(dto, user));
-        }
-
         public void Map(TenantNoteDto dto, TenantNote entity, ClaimsPrincipal? user = null)
         {
             entity.Id = dto.Id;
             entity.Content = dto.Content;
-            entity.TenantId = dto.TenantId;
             entity.TenantId = dto.TenantId;
             entity.CreatedDate = dto.CreatedDate;
             entity.CreatedBy = dto.CreatedBy;
@@ -61,7 +50,6 @@ namespace Boxty.ServerApp.Modules.UserManagement.Infrastructure.Mappers
         {
             dto.Id = entity.Id;
             dto.Content = entity.Content;
-            dto.TenantId = entity.TenantId;
             dto.TenantId = entity.TenantId;
             dto.CreatedDate = entity.CreatedDate;
             dto.CreatedBy = entity.CreatedBy;

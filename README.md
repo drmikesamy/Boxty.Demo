@@ -116,63 +116,100 @@ Update the `Email` section with your SMTP provider details:
 
 ## Development Scripts
 
-### Clone Module Script
+### Create a New Module
 
-The `clone-module.sh` script helps you quickly scaffold a new module based on an existing one.
+Use the installed Boxty module template to create a new module in the same structure as `DBExplorer`.
 
-**Usage:**
-
-```bash
-cd scripts
-./clone-module.sh
-```
-
-The script will:
-1. Prompt you for the new module name
-2. Ask which module to use as a template (UserManagement or Shared)
-3. Clone the selected module structure
-4. Clean up entity files, migrations, and authorization handlers
-5. Rename all files and namespaces to match your new module name
-
-This provides a clean starting point for creating new feature modules in your application.
-
-### Generate Entity Script
-
-The `generate-entity.sh` script automates the creation of new entities with all necessary boilerplate code.
-
-**Usage:**
+**Install template:**
 
 ```bash
-cd scripts
-./generate-entity.sh
+dotnet new install ./templates
 ```
 
-The script will:
-1. Display available modules and prompt you to select one
-2. Ask for the new entity name (in PascalCase, e.g., `Product`)
-3. Generate the following files:
-   - Entity class in the module's `Entities` folder
-   - DTO classes in the `SharedApp/DTOs` folder
-   - Mapper class for converting between entities and DTOs
-   - Repository interface and implementation
-   - Service interface and implementation with CRUD operations
-   - Controller with REST API endpoints
-   - Authorization handlers for fine-grained permissions
+**Create a new module:**
 
-The generated code follows the project's conventions and includes:
-- Multi-tenancy support
-- Fine-grained CRUD permissions
-- Soft delete functionality
-- Audit fields (CreatedAt, UpdatedAt, etc.)
-- Complete REST API endpoints
-
-**Example:**
 ```bash
-./generate-entity.sh
-# Select module: 2) Calendar
-# Enter entity name: Event
-# Generates: Event entity, EventDto, EventMapper, EventService, EventController, etc.
+dotnet new boxty-module --moduleName "Invoicing" --entityName "Invoice"
 ```
+
+> Point the output at the demo project root so the template can create the correct `boxty.demo/Boxty/ServerApp/Modules/...` structure. Do not output directly into the `Modules` folder itself.
+
+This creates a module under:
+
+```text
+Boxty/ServerApp/Modules/InventoryModule/
+Boxty/SharedApp/DTOs/InventoryModule/
+```
+
+The generated structure mirrors the `DBExplorer` conventions:
+
+```text
+Boxty/ServerApp/Modules/InventoryModule/
+├── Entities/
+├── Infrastructure/
+│   ├── Database/
+│   ├── Mappers/
+│   └── InventoryModuleModule.cs
+├── Application/
+├── Endpoints/
+├── Services/
+└── *.csproj files
+
+Boxty/SharedApp/DTOs/InventoryModule/
+└── InventoryModuleDto.cs
+```
+
+### Create a New Entity, DTO, and Mapper
+
+Use the entity template only after a module already exists. This does not create a new module; it adds a new entity inside an existing module folder.
+
+**Install template:**
+
+```bash
+dotnet new install ./templates
+```
+
+**Generate a new entity in an existing module:**
+
+```bash
+dotnet new boxty-entity --moduleName "Invoicing" --entityName "Payment"
+```
+
+> For entity generation, the output root should still be the demo project root. The template uses the module name to place files under `boxty.demo/Boxty/ServerApp/Modules/InventoryModule/...`.
+
+This creates files like:
+
+```text
+Boxty/ServerApp/Modules/InventoryModule/Entities/Product.cs
+Boxty/ServerApp/Modules/InventoryModule/Infrastructure/Mappers/ProductMapper.cs
+Boxty/SharedApp/DTOs/InventoryModule/ProductDto.cs
+```
+
+The generated classes follow the repo conventions:
+- entity inherits `BaseEntity<Product>` and `IEntity`
+- DTO inherits `BaseDto<ProductDto>`, `IDto`, `IAuditDto`, and `IAutoCrud`
+- mapper implements `IMapper<Product, ProductDto>`
+- namespaces use the target module name, for example `Boxty.ServerApp.Modules.InventoryModule.Entities`
+
+### Add Fields to an Existing Entity/DTO/Mapper
+
+Use the field generator for incremental property additions after the entity already exists.
+
+```bash
+cd <repo-root>/boxty.demo/scripts
+./generate-fields.sh
+```
+
+It will prompt for:
+1. the module
+2. the entity name
+3. one or more fields, for example:
+
+```text
+public required string Name, public string Description, public Guid TenantId
+```
+
+and then update the matching entity, DTO, and mapper in place.
 
 ### Running Database Migrations
 

@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\SharedApp\Boxty.SharedApp.csproj" />
-    <PackageReference Include="Boxty.ServerBase" Version="1.0.*" />
+    <PackageReference Include="Boxty.ServerBase" Version="1.0.6" />
   </ItemGroup>
 
 </Project>
