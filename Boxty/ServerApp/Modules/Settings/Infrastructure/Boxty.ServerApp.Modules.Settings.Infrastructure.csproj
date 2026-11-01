@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="Boxty.Tests" />
     <ProjectReference Include="..\..\..\..\SharedApp\Boxty.SharedApp.csproj" />
     <ProjectReference Include="..\Entities\Boxty.ServerApp.Modules.Settings.Entities.csproj" />
     <ProjectReference Include="..\..\Shared\Boxty.ServerApp.Modules.Shared.csproj" />

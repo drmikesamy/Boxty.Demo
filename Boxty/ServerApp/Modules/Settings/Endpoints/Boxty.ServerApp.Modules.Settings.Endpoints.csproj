@@ -4,4 +4,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\SharedApp\Boxty.SharedApp.csproj" />
+    <ProjectReference Include="..\Entities\Boxty.ServerApp.Modules.Settings.Entities.csproj" />
+    <ProjectReference Include="..\Infrastructure\Boxty.ServerApp.Modules.Settings.Infrastructure.csproj" />
+    <PackageReference Include="Boxty.ServerBase" Version="1.0.6" />
+  </ItemGroup>
 </Project>

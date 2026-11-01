@@ -29,6 +29,7 @@ namespace Boxty.ServerApp.Modules.Settings.Infrastructure
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<SettingsDbContext>();
                 dbContext.Database.Migrate();
+                SettingsSeedData.Seed(dbContext);
             }
 
             return app;

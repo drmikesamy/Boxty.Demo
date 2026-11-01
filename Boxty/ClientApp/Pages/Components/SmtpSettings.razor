@@ -1,0 +1,16 @@
+@namespace Boxty.ClientApp.Pages.Components
+@using Boxty.ClientApp.Pages.Components.Forms
+@using Boxty.ClientBase.Components
+@using Boxty.ClientBase.Enums
+@using Boxty.SharedApp.DTOs.Settings
+
+<CrudForm T="SmtpConfigDto" Model="Model" FormMode="FormMode" IsModal="false">
+    <ChildContent>
+        <SmtpConfigForm />
+    </ChildContent>
+</CrudForm>
+
+@code {
+    [Parameter] public SmtpConfigDto Model { get; set; } = new();
+    [Parameter] public FormModeEnum FormMode { get; set; } = FormModeEnum.Create;
+}

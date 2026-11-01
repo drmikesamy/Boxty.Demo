@@ -6,16 +6,16 @@ namespace Boxty.SharedApp.DTOs.Settings
 {
     public class SmtpConfigDto : BaseDto<SmtpConfigDto>, IDto, IAuditDto, IAutoCrud
     {
-        public required string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public required string SenderAddress { get; set; }
-        public required string SenderName { get; set; }
-        public required string SmtpHost { get; set; }
-        public required int SmtpPort { get; set; }
-        public required string SmtpUsername { get; set; }
-        public required string SmtpPassword { get; set; }
+        public string SenderAddress { get; set; } = string.Empty;
+        public string SenderName { get; set; } = string.Empty;
+        public string SmtpHost { get; set; } = string.Empty;
+        public int SmtpPort { get; set; } = 587;
+        public string SmtpUsername { get; set; } = string.Empty;
+        public string SmtpPassword { get; set; } = string.Empty;
         public bool EnableEmailSending { get; set; }
 
-        public string DisplayName => "TODO: Set display name"; // TODO: Update this
+        public string DisplayName => Name;
     }
 }

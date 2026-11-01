@@ -2,7 +2,7 @@
 @using MudBlazor
 @using Boxty.SharedBase.DTOs.Auth;
 @using Boxty.SharedApp.DTOs.UserManagement
-@using Boxty.ClientApp.Pages.Components.Grids
+@using Boxty.ClientApp.Pages.Components
 @using Boxty.ClientBase.Services
 @using Boxty.SharedApp.Extensions
 
@@ -103,6 +103,9 @@
                 }
             </MudTabs>
         }
+    </MudTabPanel>
+    <MudTabPanel Text="Email Sending">
+        <SmtpSettings />
     </MudTabPanel>
 </MudTabs>
 

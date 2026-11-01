@@ -85,26 +85,18 @@ Boxty/
 
 ### SMTP Email Configuration
 
-To enable email sending functionality, you need to configure SMTP settings in the server's appsettings files.
+SMTP defaults are seeded into the Settings database by
+[SettingsSeedData](Boxty/ServerApp/Modules/Settings/Infrastructure/Database/SettingsSeedData.cs)
+during module startup, immediately after migrations, following the same pattern
+as the root admin seed in UserManagement. No separate SQL restore or manual
+post-migration command is required.
 
-Edit the following file(s) depending on your environment:
-- [Boxty/ServerApp/WebApi/appsettings.Development.json](Boxty/ServerApp/WebApi/appsettings.Development.json)
-- [Boxty/ServerApp/WebApi/appsettings.Staging.json](Boxty/ServerApp/WebApi/appsettings.Staging.json)
-- [Boxty/ServerApp/WebApi/appsettings.Production.json](Boxty/ServerApp/WebApi/appsettings.Production.json)
-
-Update the `Email` section with your SMTP provider details:
-
-```json
-"Email": {
-  "SenderAddress": "your-email@example.com",
-  "SenderName": "Your App Name",
-  "SmtpHost": "smtp.your-provider.com",
-  "SmtpPort": 465,
-  "SmtpUsername": "your-smtp-username",
-  "SmtpPassword": "your-smtp-password",
-  "EnableEmailSending": true
-}
-```
+The seed copies the former appsettings values: `info@boxty.com`, sender name
+`Boxty System`, host `smtp.ionos.co.uk`, port `465`, username `emailsmtp@boxty.com`,
+and `EnableEmailSending = true`. The password remains the placeholder
+`YOUR-SMTP-PASSWORD`; supply a real credential securely before enabling delivery.
+Seeding only runs when the SMTP table is empty, including archived records.
+Existing or edited settings are never overwritten.
 
 **Common SMTP Providers:**
 - **Gmail**: `smtp.gmail.com`, port `587` (TLS) or `465` (SSL)
@@ -113,6 +105,23 @@ Update the `Email` section with your SMTP provider details:
 - **AWS SES**: region-specific endpoint, port `587`
 
 **Note:** Set `EnableEmailSending` to `false` during development if you want to disable email functionality.
+
+**Settings > Email Sending** uses the shared `CrudForm` directly, without custom
+loading or save/delete callbacks. `SmtpSettings` accepts a supplied `Model` and
+`FormMode`; without them it renders a blank new configuration.
+
+The base form currently does not load singleton settings,
+transition automatically from create to edit after saving, or reload/reset after
+deletion. Those capabilities must be added to the base components/services before
+this tab can automatically edit the saved singleton.
+Repeated saves of a newly created model are not guaranteed to update the same
+record until the base form handles the create-to-edit transition.
+
+The config-defaults endpoint has been removed. **Runtime integration gap:**
+the base email service and user creation/password-reset commands still depend on
+`AppOptions.Email`, not the Settings database. With the `Email` appsettings section
+removed, those paths require base service integration with the saved SMTP record
+before email-related operations can work. This change does not modify base services.
 
 ## Development Scripts
 

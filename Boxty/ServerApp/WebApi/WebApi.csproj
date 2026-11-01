@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Modules\Settings\Infrastructure\Boxty.ServerApp.Modules.Settings.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules\Settings\Endpoints\Boxty.ServerApp.Modules.Settings.Endpoints.csproj" />
     <ProjectReference Include="..\Modules\UserManagement\Infrastructure\Boxty.ServerApp.Modules.UserManagement.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\UserManagement\Endpoints\Boxty.ServerApp.Modules.UserManagement.Endpoints.csproj" />
     <ProjectReference Include="..\Modules\DemoModule\Infrastructure\Boxty.ServerApp.Modules.DemoModule.Infrastructure.csproj" />

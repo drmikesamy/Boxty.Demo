@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor;
 using MudBlazor.Services;
 using Boxty.SharedApp.DTOs.UserManagement;
+using Boxty.SharedApp.DTOs.Settings;
 using FluentValidation;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -87,6 +88,7 @@ builder.Services.AddScoped<ICrudService<SubjectDocumentDto>, CrudService<Subject
 builder.Services.AddScoped<ICrudService<TenantNoteDto>, CrudService<TenantNoteDto>>();
 builder.Services.AddScoped<ICrudService<SubjectNoteDto>, CrudService<SubjectNoteDto>>();
 builder.Services.AddScoped<ICrudService<RoleDto>, CrudService<RoleDto>>();
+builder.Services.AddScoped<ICrudService<SmtpConfigDto>, CrudService<SmtpConfigDto>>();
 
 builder.Services.AddScoped<IDocumentUploadService, DocumentUploadService>();
 builder.Services.AddScoped<IAuthHelperService, AuthHelperService>();

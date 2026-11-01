@@ -1,0 +1,49 @@
+@namespace Boxty.ClientApp.Pages.Components.Forms
+@using Boxty.SharedBase.Interfaces
+@using Boxty.SharedApp.DTOs.Settings
+@using Boxty.ClientBase.Enums
+@using MudBlazor
+
+<MudGrid>
+    <MudItem xs="12" sm="6">
+        @if (FormMode == FormModeEnum.Edit)
+        {
+            <MudTextField @bind-Value="Model.Id" For="@(() => Model.Id)" Label="Config ID"
+                Variant="Variant.Outlined" ReadOnly="true" />
+        }
+        <MudTextField @bind-Value="Model.Name" For="@(() => Model.Name)" Label="Configuration Name"
+            Variant="Variant.Outlined" Required="true" />
+
+        <MudTextField @bind-Value="Model.Description" For="@(() => Model.Description)"
+            Label="Description" Variant="Variant.Outlined" />
+
+        <MudTextField @bind-Value="Model.SenderAddress" For="@(() => Model.SenderAddress)"
+            Label="Sender Email Address" Variant="Variant.Outlined" Required="true" />
+
+        <MudTextField @bind-Value="Model.SenderName" For="@(() => Model.SenderName)"
+            Label="Sender Display Name" Variant="Variant.Outlined" Required="true" />
+    </MudItem>
+    <MudItem xs="12" sm="6">
+        <MudTextField @bind-Value="Model.SmtpHost" For="@(() => Model.SmtpHost)" Label="SMTP Host"
+            Variant="Variant.Outlined" Required="true" />
+
+        <MudNumericField @bind-Value="Model.SmtpPort" For="@(() => Model.SmtpPort)" Label="SMTP Port"
+            Variant="Variant.Outlined" Required="true" Min="1" Max="65535" />
+
+        <MudTextField @bind-Value="Model.SmtpUsername" For="@(() => Model.SmtpUsername)" Label="SMTP Username"
+            Variant="Variant.Outlined" Required="true" />
+
+        <MudTextField @bind-Value="Model.SmtpPassword" For="@(() => Model.SmtpPassword)" Label="SMTP Password"
+            Variant="Variant.Outlined" InputType="InputType.Password" Required="true" />
+
+        <MudCheckBox T="bool" @bind-Value="Model.EnableEmailSending" For="@(() => Model.EnableEmailSending)"
+            Label="Enable Email Sending" Color="Color.Primary" />
+    </MudItem>
+</MudGrid>
+
+@code {
+    [CascadingParameter(Name = "Model")] public SmtpConfigDto Model { get; set; } = default!;
+    [CascadingParameter(Name = "FormMode")] public FormModeEnum FormMode { get; set; } = FormModeEnum.Create;
+    [CascadingParameter(Name = "Tenant")] public ITenant Tenant { get; set; } = default!;
+    [CascadingParameter(Name = "Subject")] public ISubject Subject { get; set; } = default!;
+}
