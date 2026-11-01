@@ -4,19 +4,21 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Boxty.ServerApp.Modules.DBExplorer.Infrastructure.Database;
+using Boxty.ServerApp.Modules.DemoModule.Infrastructure.Database;
 
-namespace Boxty.ServerApp.Modules.DBExplorer.Infrastructure
+namespace Boxty.ServerApp.Modules.DemoModule.Infrastructure
 {
-    public class DBExplorerModule : IModule
+    public class DemoModuleModule : IModule
     {
         public IServiceCollection RegisterModuleServices(IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection")
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-            services.AddDbContext<IDbContext<DBExplorerDbContext>, DBExplorerDbContext>(options =>
+            services.AddDbContext<DemoModuleDbContext>(options =>
                 options.UseNpgsql(connectionString));
+            services.AddScoped<IDbContext<DemoModuleDbContext>>(sp =>
+                sp.GetRequiredService<DemoModuleDbContext>());
 
             return services;
         }
@@ -25,7 +27,7 @@ namespace Boxty.ServerApp.Modules.DBExplorer.Infrastructure
         {
             using (var scope = app.Services.CreateScope())
             {
-                var dbContext = scope.ServiceProvider.GetRequiredService<DBExplorerDbContext>();
+                var dbContext = scope.ServiceProvider.GetRequiredService<DemoModuleDbContext>();
                 dbContext.Database.Migrate();
             }
 

@@ -135,7 +135,7 @@ dotnet new install ./templates --force
 **Create a new module:**
 
 ```bash
-dotnet new boxty-module --moduleName "Invoicing" --entityName "Invoice"
+dotnet new boxty-module --moduleName "DemoModule" --entityName "Invoice"
 ```
 
 > Run from the demo repository root (or use `--output <demo-root>`). Do not output directly into the `Modules` folder itself.
@@ -143,28 +143,28 @@ dotnet new boxty-module --moduleName "Invoicing" --entityName "Invoice"
 This creates a module under:
 
 ```text
-Boxty/ServerApp/Modules/Invoicing/
-Boxty/SharedApp/DTOs/Invoicing/
+Boxty/ServerApp/Modules/DemoModule/
+Boxty/SharedApp/DTOs/DemoModule/
 ```
 
 The generated structure mirrors the `DBExplorer` conventions:
 
 ```text
-Boxty/ServerApp/Modules/Invoicing/
+Boxty/ServerApp/Modules/DemoModule/
 ├── Entities/
 ├── Infrastructure/
 │   ├── Database/
 │   │   ├── Configurations/InvoiceConfiguration.cs
 │   │   ├── DesignTimeDbContextFactory.cs
-│   │   └── InvoicingDbContext.cs
+│   │   └── DemoModuleDbContext.cs
 │   ├── Mappers/
-│   └── InvoicingModule.cs
+│   └── DemoModuleModule.cs
 ├── Application/
 ├── Endpoints/
 ├── Services/
 └── *.csproj files
 
-Boxty/SharedApp/DTOs/Invoicing/
+Boxty/SharedApp/DTOs/DemoModule/
 └── InvoiceDto.cs
 ```
 
@@ -176,14 +176,14 @@ The template adds new files only; it does not overwrite the existing WebApi proj
 
 ```bash
 dotnet add Boxty/ServerApp/WebApi/WebApi.csproj reference \
-  Boxty/ServerApp/Modules/Invoicing/Infrastructure/Boxty.ServerApp.Modules.Invoicing.Infrastructure.csproj \
-  Boxty/ServerApp/Modules/Invoicing/Endpoints/Boxty.ServerApp.Modules.Invoicing.Endpoints.csproj
+  Boxty/ServerApp/Modules/DemoModule/Infrastructure/Boxty.ServerApp.Modules.DemoModule.Infrastructure.csproj \
+  Boxty/ServerApp/Modules/DemoModule/Endpoints/Boxty.ServerApp.Modules.DemoModule.Endpoints.csproj
 
 dotnet sln Boxty/ServerApp/ServerApp.sln add \
-  Boxty/ServerApp/Modules/Invoicing/*/*.csproj
+  Boxty/ServerApp/Modules/DemoModule/*/*.csproj
 ```
 
-In [Boxty/ServerApp/WebApi/Program.cs](Boxty/ServerApp/WebApi/Program.cs), add `using Boxty.ServerApp.Modules.Invoicing.Infrastructure;` and add `typeof(InvoicingModule),` to the existing `moduleTypes` list, keeping the other modules.
+In [Boxty/ServerApp/WebApi/Program.cs](Boxty/ServerApp/WebApi/Program.cs), add `using Boxty.ServerApp.Modules.DemoModule.Infrastructure;` and add `typeof(DemoModuleModule),` to the existing `moduleTypes` list, keeping the other modules.
 
 Then restore and verify the host:
 
@@ -206,7 +206,7 @@ dotnet new install ./templates
 **Generate a new entity in an existing module:**
 
 ```bash
-dotnet new boxty-entity --moduleName "Invoicing" --entityName "Payment"
+dotnet new boxty-entity --moduleName "DemoModule" --entityName "Payment"
 ```
 
 > Run from the demo repository root (or use `--output <demo-root>`), not from inside the module. Use a new entity name; do not use `--force` to overwrite an entity you have already customized.
@@ -214,21 +214,21 @@ dotnet new boxty-entity --moduleName "Invoicing" --entityName "Payment"
 This creates files like:
 
 ```text
-Boxty/ServerApp/Modules/Invoicing/Entities/Payment.cs
-Boxty/ServerApp/Modules/Invoicing/Endpoints/PaymentEndpoints.cs
-Boxty/ServerApp/Modules/Invoicing/Infrastructure/Mappers/PaymentMapper.cs
-Boxty/ServerApp/Modules/Invoicing/Infrastructure/Database/Configurations/PaymentConfiguration.cs
-Boxty/SharedApp/DTOs/Invoicing/PaymentDto.cs
+Boxty/ServerApp/Modules/DemoModule/Entities/Payment.cs
+Boxty/ServerApp/Modules/DemoModule/Endpoints/PaymentEndpoints.cs
+Boxty/ServerApp/Modules/DemoModule/Infrastructure/Mappers/PaymentMapper.cs
+Boxty/ServerApp/Modules/DemoModule/Infrastructure/Database/Configurations/PaymentConfiguration.cs
+Boxty/SharedApp/DTOs/DemoModule/PaymentDto.cs
 ```
 
 The generated classes follow the repo conventions:
 - entity inherits `BaseEntity<Payment>` and `IEntity`
 - DTO inherits `BaseDto<PaymentDto>`, `IDto`, `IAuditDto`, and `IAutoCrud`
 - mapper implements all four `IMapper<Payment, PaymentDto>` methods using explicit mapping, compatible with the field generator
-- namespaces use the target module name, for example `Boxty.ServerApp.Modules.Invoicing.Entities`
+- namespaces use the target module name, for example `Boxty.ServerApp.Modules.DemoModule.Entities`
 - EF configuration registers the entity, table/schema, and UUID default through the DbContext's existing `ApplyConfigurationsFromAssembly` call
 
-No additional DbSet or project reference is required for each entity. For older modules, ensure the DbContext calls `modelBuilder.ApplyConfigurationsFromAssembly(typeof(InvoicingDbContext).Assembly)` and has a design-time factory, and complete the host wiring above once. Generated table names append `s` to the entity name; adjust `ToTable` in the configuration if you need a different plural.
+No additional DbSet or project reference is required for each entity. For older modules, ensure the DbContext calls `modelBuilder.ApplyConfigurationsFromAssembly(typeof(DemoModuleDbContext).Assembly)` and has a design-time factory, and complete the host wiring above once. Generated table names append `s` to the entity name; adjust `ToTable` in the configuration if you need a different plural.
 
 After changing properties manually, update both the DTO and mapper too, or use the field generator below.
 
@@ -288,7 +288,7 @@ ASPNETCORE_ENVIRONMENT=Staging ./run-migrations.sh
 **Example Workflow:**
 ```bash
 # 1. Generate a new entity from the demo repository root
-dotnet new boxty-entity --moduleName "Invoicing" --entityName "Payment"
+dotnet new boxty-entity --moduleName "DemoModule" --entityName "Payment"
 
 # 2. Create the database migration
 cd Boxty/ServerApp
@@ -299,8 +299,8 @@ cd Boxty/ServerApp
 # 3. Review the generated migration, then apply it explicitly
 cd WebApi
 ASPNETCORE_ENVIRONMENT=Development dotnet ef database update \
-  --context InvoicingDbContext \
-  --project ../Modules/Invoicing/Infrastructure/Boxty.ServerApp.Modules.Invoicing.Infrastructure.csproj \
+  --context DemoModuleDbContext \
+  --project ../Modules/DemoModule/Infrastructure/Boxty.ServerApp.Modules.DemoModule.Infrastructure.csproj \
   --startup-project WebApi.csproj
 ```
 
