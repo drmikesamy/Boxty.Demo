@@ -1,10 +1,12 @@
 ﻿using Boxty.ServerBase.Extensions;
 using Boxty.ServerApp.Modules.UserManagement.Infrastructure;
+using Boxty.ServerApp.Modules.Settings.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var moduleTypes = new List<Type>
 {
+    typeof(SettingsModule),
     typeof(UserManagementModule)
 };
 

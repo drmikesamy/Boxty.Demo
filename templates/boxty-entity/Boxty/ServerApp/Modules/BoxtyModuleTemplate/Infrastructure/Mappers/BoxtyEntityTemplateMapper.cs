@@ -1,27 +1,41 @@
 using Boxty.ServerBase.Mappers;
-using Boxty.ServerApp.Modules.BoxtyModuleTemplate.Entities;
+using ModuleEntity = Boxty.ServerApp.Modules.BoxtyModuleTemplate.Entities.BoxtyEntityTemplate;
 using Boxty.SharedApp.DTOs.BoxtyModuleTemplate;
 using System.Security.Claims;
 
 namespace Boxty.ServerApp.Modules.BoxtyModuleTemplate.Infrastructure.Mappers
 {
-    public class BoxtyEntityTemplateMapper : IMapper<BoxtyEntityTemplate, BoxtyEntityTemplateDto>
+    public class BoxtyEntityTemplateMapper : IMapper<ModuleEntity, BoxtyEntityTemplateDto>
     {
-        public BoxtyEntityTemplateDto Map(BoxtyEntityTemplate entity, ClaimsPrincipal? user = null);
-
-        public BoxtyEntityTemplate Map(BoxtyEntityTemplateDto dto, ClaimsPrincipal? user = null);
-
-        public IEnumerable<BoxtyEntityTemplateDto> Map(IEnumerable<BoxtyEntityTemplate> entities, ClaimsPrincipal? user = null)
+        public BoxtyEntityTemplateDto Map(ModuleEntity entity, ClaimsPrincipal? user = null)
         {
-            return entities.Select(entity => Map(entity, user));
+            return new BoxtyEntityTemplateDto
+            {
+                Id = entity.Id,
+                Name = entity.Name,
+                Description = entity.Description,
+                CreatedDate = entity.CreatedDate,
+                CreatedBy = entity.CreatedBy,
+                ModifiedDate = entity.ModifiedDate,
+                LastModifiedBy = entity.LastModifiedBy
+            };
         }
 
-        public IEnumerable<BoxtyEntityTemplate> Map(IEnumerable<BoxtyEntityTemplateDto> dtos, ClaimsPrincipal? user = null)
+        public ModuleEntity Map(BoxtyEntityTemplateDto dto, ClaimsPrincipal? user = null)
         {
-            return dtos.Select(dto => Map(dto, user));
+            return new ModuleEntity
+            {
+                Id = dto.Id,
+                Name = dto.Name,
+                Description = dto.Description,
+                CreatedDate = dto.CreatedDate,
+                CreatedBy = dto.CreatedBy,
+                ModifiedDate = dto.ModifiedDate,
+                LastModifiedBy = dto.LastModifiedBy
+            };
         }
 
-        public void Map(BoxtyEntityTemplateDto dto, BoxtyEntityTemplate entity, ClaimsPrincipal? user = null)
+        public void Map(BoxtyEntityTemplateDto dto, ModuleEntity entity, ClaimsPrincipal? user = null)
         {
             entity.Id = dto.Id;
             entity.Name = dto.Name;
@@ -32,7 +46,7 @@ namespace Boxty.ServerApp.Modules.BoxtyModuleTemplate.Infrastructure.Mappers
             entity.LastModifiedBy = dto.LastModifiedBy;
         }
 
-        public void Map(BoxtyEntityTemplate entity, BoxtyEntityTemplateDto dto, ClaimsPrincipal? user = null)
+        public void Map(ModuleEntity entity, BoxtyEntityTemplateDto dto, ClaimsPrincipal? user = null)
         {
             dto.Id = entity.Id;
             dto.Name = entity.Name;

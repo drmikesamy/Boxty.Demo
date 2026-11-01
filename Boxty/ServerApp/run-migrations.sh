@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 # Navigate to the Server directory
 cd "$(dirname "$0")"
 
@@ -52,5 +54,19 @@ for i in "${!modules[@]}"; do
     fi
 
     # Run the migration command
-    ASPNETCORE_ENVIRONMENT=Local dotnet ef migrations add "$migration_name" --context "${module_name}DbContext" --output-dir Database/Migrations --project "$(pwd)/Modules/${module_name}/Infrastructure/Boxty.ServerApp.Modules.${module_name}.Infrastructure.csproj" --startup-project "$(pwd)/WebApi/WebApi.csproj"
+    project="$(pwd)/Modules/${module_name}/Infrastructure/Boxty.ServerApp.Modules.${module_name}.Infrastructure.csproj"
+    startup_project="$(pwd)/WebApi/WebApi.csproj"
+
+    dotnet restore "$project"
+    dotnet restore "$startup_project"
+
+    # Design-time factories load appsettings from the working directory.
+    (
+        cd WebApi
+        ASPNETCORE_ENVIRONMENT="${ASPNETCORE_ENVIRONMENT:-Development}" dotnet ef migrations add "$migration_name" \
+            --context "${module_name}DbContext" \
+            --output-dir Database/Migrations \
+            --project "$project" \
+            --startup-project "$startup_project"
+    )
 done

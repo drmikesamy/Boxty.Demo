@@ -15,8 +15,10 @@ namespace Boxty.ServerApp.Modules.Settings.Infrastructure
             var connectionString = configuration.GetConnectionString("DefaultConnection")
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-            services.AddDbContext<IDbContext<SettingsDbContext>, SettingsDbContext>(options =>
+            services.AddDbContext<SettingsDbContext>(options =>
                 options.UseNpgsql(connectionString));
+            
+            services.AddScoped<IDbContext<SettingsDbContext>>(sp => sp.GetRequiredService<SettingsDbContext>());
 
             return services;
         }

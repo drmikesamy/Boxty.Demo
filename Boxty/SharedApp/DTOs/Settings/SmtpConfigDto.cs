@@ -8,7 +8,14 @@ namespace Boxty.SharedApp.DTOs.Settings
     {
         public required string Name { get; set; }
         public string Description { get; set; } = string.Empty;
+        public required string SenderAddress { get; set; }
+        public required string SenderName { get; set; }
+        public required string SmtpHost { get; set; }
+        public required int SmtpPort { get; set; }
+        public required string SmtpUsername { get; set; }
+        public required string SmtpPassword { get; set; }
+        public bool EnableEmailSending { get; set; }
 
-        public string DisplayName => Name;
+        public string DisplayName => "TODO: Set display name"; // TODO: Update this
     }
 }

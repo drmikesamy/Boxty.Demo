@@ -77,7 +77,7 @@ Boxty/
 
 ## Prerequisites
 
-- [.NET SDK](https://dotnet.microsoft.com/download) (version 8.0 or later)
+- [.NET SDK](https://dotnet.microsoft.com/download) with .NET 9 targeting support
 - [Docker Desktop](https://www.docker.com/products/docker-desktop) or Docker Engine
 - [Docker Compose](https://docs.docker.com/compose/) (usually included with Docker Desktop)
 
@@ -126,38 +126,72 @@ Use the installed Boxty module template to create a new module in the same struc
 dotnet new install ./templates
 ```
 
+Run this from the demo repository root. After updating the templates, refresh the installed copies:
+
+```bash
+dotnet new install ./templates --force
+```
+
 **Create a new module:**
 
 ```bash
 dotnet new boxty-module --moduleName "Invoicing" --entityName "Invoice"
 ```
 
-> Point the output at the demo project root so the template can create the correct `boxty.demo/Boxty/ServerApp/Modules/...` structure. Do not output directly into the `Modules` folder itself.
+> Run from the demo repository root (or use `--output <demo-root>`). Do not output directly into the `Modules` folder itself.
 
 This creates a module under:
 
 ```text
-Boxty/ServerApp/Modules/InventoryModule/
-Boxty/SharedApp/DTOs/InventoryModule/
+Boxty/ServerApp/Modules/Invoicing/
+Boxty/SharedApp/DTOs/Invoicing/
 ```
 
 The generated structure mirrors the `DBExplorer` conventions:
 
 ```text
-Boxty/ServerApp/Modules/InventoryModule/
+Boxty/ServerApp/Modules/Invoicing/
 ├── Entities/
 ├── Infrastructure/
 │   ├── Database/
+│   │   ├── Configurations/InvoiceConfiguration.cs
+│   │   ├── DesignTimeDbContextFactory.cs
+│   │   └── InvoicingDbContext.cs
 │   ├── Mappers/
-│   └── InventoryModuleModule.cs
+│   └── InvoicingModule.cs
 ├── Application/
 ├── Endpoints/
 ├── Services/
 └── *.csproj files
 
-Boxty/SharedApp/DTOs/InventoryModule/
-└── InventoryModuleDto.cs
+Boxty/SharedApp/DTOs/Invoicing/
+└── InvoiceDto.cs
 ```
+
+The generated projects include their framework packages and project references. The DbContext uses the entity name (`Invoice`), not the module name, and includes a design-time factory so migration generation does not start the full application.
+
+**Wire the new module into the host (required once per module):**
+
+The template adds new files only; it does not overwrite the existing WebApi project or startup code.
+
+```bash
+dotnet add Boxty/ServerApp/WebApi/WebApi.csproj reference \
+  Boxty/ServerApp/Modules/Invoicing/Infrastructure/Boxty.ServerApp.Modules.Invoicing.Infrastructure.csproj \
+  Boxty/ServerApp/Modules/Invoicing/Endpoints/Boxty.ServerApp.Modules.Invoicing.Endpoints.csproj
+
+dotnet sln Boxty/ServerApp/ServerApp.sln add \
+  Boxty/ServerApp/Modules/Invoicing/*/*.csproj
+```
+
+In [Boxty/ServerApp/WebApi/Program.cs](Boxty/ServerApp/WebApi/Program.cs), add `using Boxty.ServerApp.Modules.Invoicing.Infrastructure;` and add `typeof(InvoicingModule),` to the existing `moduleTypes` list, keeping the other modules.
+
+Then restore and verify the host:
+
+```bash
+dotnet build Boxty/ServerApp/WebApi/WebApi.csproj
+```
+
+Both Infrastructure and Endpoints references are needed: Infrastructure supplies the DbContext and mappers, while Endpoints must be available for runtime endpoint discovery.
 
 ### Create a New Entity, DTO, and Mapper
 
@@ -175,21 +209,28 @@ dotnet new install ./templates
 dotnet new boxty-entity --moduleName "Invoicing" --entityName "Payment"
 ```
 
-> For entity generation, the output root should still be the demo project root. The template uses the module name to place files under `boxty.demo/Boxty/ServerApp/Modules/InventoryModule/...`.
+> Run from the demo repository root (or use `--output <demo-root>`), not from inside the module. Use a new entity name; do not use `--force` to overwrite an entity you have already customized.
 
 This creates files like:
 
 ```text
-Boxty/ServerApp/Modules/InventoryModule/Entities/Product.cs
-Boxty/ServerApp/Modules/InventoryModule/Infrastructure/Mappers/ProductMapper.cs
-Boxty/SharedApp/DTOs/InventoryModule/ProductDto.cs
+Boxty/ServerApp/Modules/Invoicing/Entities/Payment.cs
+Boxty/ServerApp/Modules/Invoicing/Endpoints/PaymentEndpoints.cs
+Boxty/ServerApp/Modules/Invoicing/Infrastructure/Mappers/PaymentMapper.cs
+Boxty/ServerApp/Modules/Invoicing/Infrastructure/Database/Configurations/PaymentConfiguration.cs
+Boxty/SharedApp/DTOs/Invoicing/PaymentDto.cs
 ```
 
 The generated classes follow the repo conventions:
-- entity inherits `BaseEntity<Product>` and `IEntity`
-- DTO inherits `BaseDto<ProductDto>`, `IDto`, `IAuditDto`, and `IAutoCrud`
-- mapper implements `IMapper<Product, ProductDto>`
-- namespaces use the target module name, for example `Boxty.ServerApp.Modules.InventoryModule.Entities`
+- entity inherits `BaseEntity<Payment>` and `IEntity`
+- DTO inherits `BaseDto<PaymentDto>`, `IDto`, `IAuditDto`, and `IAutoCrud`
+- mapper implements all four `IMapper<Payment, PaymentDto>` methods using explicit mapping, compatible with the field generator
+- namespaces use the target module name, for example `Boxty.ServerApp.Modules.Invoicing.Entities`
+- EF configuration registers the entity, table/schema, and UUID default through the DbContext's existing `ApplyConfigurationsFromAssembly` call
+
+No additional DbSet or project reference is required for each entity. For older modules, ensure the DbContext calls `modelBuilder.ApplyConfigurationsFromAssembly(typeof(InvoicingDbContext).Assembly)` and has a design-time factory, and complete the host wiring above once. Generated table names append `s` to the entity name; adjust `ToTable` in the configuration if you need a different plural.
+
+After changing properties manually, update both the DTO and mapper too, or use the field generator below.
 
 ### Add Fields to an Existing Entity/DTO/Mapper
 
@@ -227,25 +268,48 @@ The script will:
 2. Prompt you to select which module's database to migrate
 3. Ask for a migration name (e.g., `AddProductEntity`, `UpdateUserFields`)
 4. Generate the migration files in the module's `Database/Migrations` folder
-5. Apply the migration to update the database schema
+5. Stop with a nonzero exit code if restore, build, or migration generation fails
+
+The script restores the selected Infrastructure project and WebApi before running EF, and loads configuration from the WebApi directory. It uses `ASPNETCORE_ENVIRONMENT` if set, otherwise `Development`. Configure `ConnectionStrings:DefaultConnection` for that environment, or supply `ConnectionStrings__DefaultConnection` through an environment variable. No local configuration file or guessed credentials are generated.
+
+To explicitly select a different environment:
+
+```bash
+ASPNETCORE_ENVIRONMENT=Staging ./run-migrations.sh
+```
 
 **Prerequisites:**
-- Ensure the database Docker container is running (`docker compose up`)
+- Install the EF CLI if it is missing (`dotnet tool install --global dotnet-ef --version '9.*'`)
+- Complete the new module's host wiring described above
+- Provide the environment's `DefaultConnection` configuration
 - Make sure your entity changes are saved before running migrations
+- The database is not required just to generate migrations; it must be available when applying them
 
 **Example Workflow:**
 ```bash
-# 1. Generate a new entity
-cd scripts
-./generate-entity.sh
+# 1. Generate a new entity from the demo repository root
+dotnet new boxty-entity --moduleName "Invoicing" --entityName "Payment"
 
-# 2. Create and apply database migration
-cd ../Boxty/ServerApp
+# 2. Create the database migration
+cd Boxty/ServerApp
 ./run-migrations.sh
 # Select module number corresponding to where you added the entity
-# Enter migration name: AddProductEntity
+# Enter migration name: AddPaymentEntity
 
-# 3. The database schema is now updated with your new entity
+# 3. Review the generated migration, then apply it explicitly
+cd WebApi
+ASPNETCORE_ENVIRONMENT=Development dotnet ef database update \
+  --context InvoicingDbContext \
+  --project ../Modules/Invoicing/Infrastructure/Boxty.ServerApp.Modules.Invoicing.Infrastructure.csproj \
+  --startup-project WebApi.csproj
 ```
 
-**Note:** Migrations are automatically applied when you run the migration script. The changes will be reflected in your running database immediately.
+**Note:** The migration script only generates migrations. The generated module also applies pending migrations at application startup, so review them before restarting the application.
+
+### Template Regression Check
+
+```bash
+python3 scripts/test-templates.py
+```
+
+This uses an isolated template installation and temporary project to build generated modules, verify mappers and DbContext registrations, and generate migrations before and after adding entities. It requires Python 3, the .NET SDK, and `dotnet-ef`, but no running database. It does not change your application or installed templates.

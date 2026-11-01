@@ -10,6 +10,11 @@
     "type": "project"
   },
   "sourceName": "BoxtyModuleTemplate",
+  "sources": [
+    {
+      "exclude": ["**/bin/**", "**/obj/**", ".template.config/**"]
+    }
+  ],
   "symbols": {
     "moduleName": {
       "type": "parameter",

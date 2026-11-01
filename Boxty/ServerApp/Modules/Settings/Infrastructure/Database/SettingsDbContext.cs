@@ -9,14 +9,14 @@ namespace Boxty.ServerApp.Modules.Settings.Infrastructure.Database
     public sealed class SettingsDbContext(DbContextOptions<SettingsDbContext> options)
         : BaseDbContext<SettingsDbContext>(options), IDbContext<SettingsDbContext>
     {
-        public DbSet<Settings> Settingss { get; set; }
+        public DbSet<SmtpConfig> SmtpConfigs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasDefaultSchema(Schema.Settings);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(SettingsDbContext).Assembly);
 
-            modelBuilder.Entity<Settings>()
+            modelBuilder.Entity<SmtpConfig>()
                 .Property(p => p.Id)
                 .HasDefaultValueSql("gen_random_uuid()");
         }

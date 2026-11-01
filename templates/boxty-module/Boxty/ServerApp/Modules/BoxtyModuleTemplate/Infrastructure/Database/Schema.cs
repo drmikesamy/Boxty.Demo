@@ -1,4 +1,4 @@
-namespace Boxty.SharedApp.Enums
+namespace Boxty.ServerApp.Modules.BoxtyModuleTemplate.Infrastructure.Database
 {
     public static class Schema
     {

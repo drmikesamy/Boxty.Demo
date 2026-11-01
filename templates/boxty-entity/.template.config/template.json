@@ -9,6 +9,11 @@
     "language": "C#",
     "type": "item"
   },
+  "sources": [
+    {
+      "exclude": ["**/bin/**", "**/obj/**", ".template.config/**"]
+    }
+  ],
   "symbols": {
     "moduleName": {
       "type": "parameter",
