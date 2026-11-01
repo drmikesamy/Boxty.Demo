@@ -214,16 +214,88 @@ public class SmtpConfigUiTests : BunitContext, IAsyncLifetime
     private static AngleSharp.Dom.IElement Button(IRenderedComponent<SmtpSettings> component, string text) =>
         component.FindAll("button").Single(button => button.TextContent.Trim() == text);
 
+    [Fact]
+    public void ShowsOnlyTestButtonWithoutRecipientSelection()
+    {
+        var component = Render<SmtpSettings>(parameters => parameters.Add(settings => settings.Model, SmtpDefaultsTests.ValidDto()));
+
+        Assert.NotNull(Button(component, "Send Test Email"));
+        Assert.DoesNotContain(component.FindComponents<MudTextField<string>>(),
+            field => field.Instance.Label == "Test recipient email");
+        Assert.DoesNotContain("Test SMTP settings", component.Markup);
+    }
+
+    [Fact]
+    public async Task TestEmailSendsUnsavedValuesWithoutSavingOrEnablingEmail()
+    {
+        var model = SmtpDefaultsTests.ValidDto();
+        model.EnableEmailSending = false;
+        var component = Render<SmtpSettings>(parameters => parameters.Add(settings => settings.Model, model));
+        model.SmtpHost = "unsaved.example.com";
+        model.SenderAddress = "myself@example.com";
+        httpHandler.Response = Task.FromResult(new HttpResponseMessage(HttpStatusCode.NoContent));
+
+        await Button(component, "Send Test Email").ClickAsync(new());
+
+        Assert.Equal("/api/smtpconfig/testemail", httpHandler.RequestUri?.AbsolutePath);
+        Assert.NotNull(httpHandler.TestRequest);
+        Assert.Equal("myself@example.com", httpHandler.TestRequest.Settings.SenderAddress);
+        Assert.Equal("unsaved.example.com", httpHandler.TestRequest.Settings.SmtpHost);
+        Assert.False(model.EnableEmailSending);
+        Assert.Equal(1, httpHandler.TestRequestCount);
+        Assert.Contains(Services.GetRequiredService<ISnackbar>().ShownSnackbars,
+            snackbar => snackbar.Severity == MudBlazor.Severity.Success);
+        crud.VerifyNoOtherCalls();
+    }
+
+    [Theory]
+    [InlineData(HttpStatusCode.BadRequest)]
+    [InlineData(HttpStatusCode.InternalServerError)]
+    public async Task TestEmailFailureIsVisibleAndDoesNotReportSuccess(HttpStatusCode status)
+    {
+        var component = Render<SmtpSettings>(parameters => parameters.Add(settings => settings.Model, SmtpDefaultsTests.ValidDto()));
+        httpHandler.Response = Task.FromResult(new HttpResponseMessage(status));
+
+        await Button(component, "Send Test Email").ClickAsync(new());
+
+        Assert.Contains(Services.GetRequiredService<ISnackbar>().ShownSnackbars,
+            snackbar => snackbar.Severity == MudBlazor.Severity.Error);
+        Assert.DoesNotContain(Services.GetRequiredService<ISnackbar>().ShownSnackbars,
+            snackbar => snackbar.Severity == MudBlazor.Severity.Success);
+        Assert.False(Button(component, "Send Test Email").HasAttribute("disabled"));
+    }
+
+    [Fact]
+    public async Task TestEmailButtonIsDisabledWhileSending()
+    {
+        var component = Render<SmtpSettings>(parameters => parameters.Add(settings => settings.Model, SmtpDefaultsTests.ValidDto()));
+        var pending = new TaskCompletionSource<HttpResponseMessage>();
+        httpHandler.Response = pending.Task;
+        var sending = Button(component, "Send Test Email").ClickAsync(new());
+
+        component.WaitForAssertion(() => Assert.True(Button(component, "Send Test Email").HasAttribute("disabled")));
+        pending.SetResult(new HttpResponseMessage(HttpStatusCode.NoContent));
+        await sending;
+        Assert.Equal(1, httpHandler.TestRequestCount);
+    }
+
     private sealed class SettingsHttpHandler : HttpMessageHandler
     {
         public Task<HttpResponseMessage> Response { get; set; } = Task.FromResult(
             new HttpResponseMessage(HttpStatusCode.OK) { Content = JsonContent.Create(Array.Empty<SmtpConfigDto>()) });
         public Uri? RequestUri { get; private set; }
+        public TestSmtpEmailRequest? TestRequest { get; private set; }
+        public int TestRequestCount { get; private set; }
 
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             RequestUri = request.RequestUri;
-            return Response;
+            if (request.Method == HttpMethod.Post)
+            {
+                TestRequestCount++;
+                TestRequest = await request.Content!.ReadFromJsonAsync<TestSmtpEmailRequest>(cancellationToken);
+            }
+            return await Response;
         }
     }
 }

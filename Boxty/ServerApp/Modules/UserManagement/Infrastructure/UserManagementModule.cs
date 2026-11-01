@@ -28,6 +28,7 @@ namespace Boxty.ServerApp.Modules.UserManagement.Infrastructure
             services.AddScoped<IAuthorizationHandler, UserManagementResourceAccessAuthorizationHandler>();
             services.AddScoped<IAuthorizationHandler, UserManagementCreateEntityAuthorizationHandler>();
             services.AddScoped<IKeycloakService, KeycloakService>();
+            services.AddScoped<IRealmSmtpSettingsService, KeycloakService>();
             services.AddScoped<IAuthorizationModelChangedNotifier, AuthorizationModelChangedNotifier>();
 
             services.AddScoped(typeof(ICreateSubjectCommand<,,>), typeof(CreateSubjectCommand<,,>));

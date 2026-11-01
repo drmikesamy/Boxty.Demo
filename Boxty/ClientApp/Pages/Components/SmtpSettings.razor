@@ -6,7 +6,9 @@
 @using System.Net.Http.Json
 @using System.Net
 @using System.Text.Json
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @inject HttpClient Http
+@inject ISnackbar Snackbar
 
 @if (isLoading)
 {
@@ -24,6 +26,10 @@ else if (Model != null)
             <SmtpConfigForm />
         </ChildContent>
     </CrudForm>
+    <MudButton OnClick="SendTestEmail" Disabled="isSendingTest"
+               Color="Color.Primary" Variant="Variant.Outlined" Class="mt-2">
+        Send Test Email
+    </MudButton>
 }
 
 @code {
@@ -32,6 +38,7 @@ else if (Model != null)
 
     private bool isLoading = true;
     private string? loadError;
+    private bool isSendingTest;
 
     protected override async Task OnInitializedAsync()
     {
@@ -78,4 +85,35 @@ else if (Model != null)
 
     private void HandleCreated(SmtpConfigDto model) => FormMode = FormModeEnum.Edit;
 
+    private async Task SendTestEmail()
+    {
+        if (isSendingTest || Model == null)
+        {
+            return;
+        }
+        isSendingTest = true;
+        try
+        {
+            using var response = await Http.PostAsJsonAsync("api/smtpconfig/testemail",
+                new TestSmtpEmailRequest(Model));
+            var message = response.IsSuccessStatusCode
+                ? "The SMTP server accepted the test email. Check your inbox and spam folder."
+                : response.StatusCode == HttpStatusCode.BadRequest
+                    ? "Check the required SMTP fields and sender email address."
+                    : "Unable to send the test email. Check your SMTP settings and permissions.";
+            Snackbar.Add(message, response.IsSuccessStatusCode ? MudBlazor.Severity.Success : MudBlazor.Severity.Error);
+        }
+        catch (AccessTokenNotAvailableException)
+        {
+            Snackbar.Add("Your session has expired. Please log in again.", MudBlazor.Severity.Error);
+        }
+        catch (HttpRequestException)
+        {
+            Snackbar.Add("Unable to contact the server to send the test email.", MudBlazor.Severity.Error);
+        }
+        finally
+        {
+            isSendingTest = false;
+        }
+    }
 }

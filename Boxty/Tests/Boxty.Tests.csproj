@@ -10,6 +10,7 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="bunit" Version="2.5.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="xunit" Version="2.9.3" />
@@ -19,5 +20,6 @@
     <Using Include="Xunit" />
     <ProjectReference Include="..\ClientApp\Boxty.ClientApp.csproj" />
     <ProjectReference Include="..\ServerApp\Modules\Settings\Endpoints\Boxty.ServerApp.Modules.Settings.Endpoints.csproj" />
+    <ProjectReference Include="..\ServerApp\Modules\UserManagement\Services\Boxty.ServerApp.Modules.UserManagement.Services.csproj" />
   </ItemGroup>
 </Project>

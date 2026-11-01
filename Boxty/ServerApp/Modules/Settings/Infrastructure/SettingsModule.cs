@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Boxty.ServerApp.Modules.Settings.Infrastructure.Database;
+using Boxty.ServerApp.Modules.Settings.Infrastructure.Commands;
 
 namespace Boxty.ServerApp.Modules.Settings.Infrastructure
 {
@@ -19,6 +20,8 @@ namespace Boxty.ServerApp.Modules.Settings.Infrastructure
                 options.UseNpgsql(connectionString));
             
             services.AddScoped<IDbContext<SettingsDbContext>>(sp => sp.GetRequiredService<SettingsDbContext>());
+            services.AddScoped<ISaveSmtpConfigCommand, SaveSmtpConfigCommand>();
+            services.AddScoped<ITestSmtpEmailCommand, TestSmtpEmailCommand>();
 
             return services;
         }

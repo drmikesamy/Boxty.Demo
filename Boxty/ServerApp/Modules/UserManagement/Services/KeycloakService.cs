@@ -6,6 +6,7 @@ using FS.Keycloak.RestApiClient.ClientFactory;
 using FS.Keycloak.RestApiClient.Model;
 using Microsoft.Extensions.Options;
 using System.Linq;
+using Boxty.ServerApp.Modules.Shared.Contracts;
 
 namespace Boxty.ServerApp.Modules.UserManagement.Services
 {
@@ -40,7 +41,7 @@ namespace Boxty.ServerApp.Modules.UserManagement.Services
         Task UpdateUserAsync(string userId, UserRepresentation userRepresentation);
     }
 
-    public class KeycloakService : IKeycloakService
+    public class KeycloakService : IKeycloakService, IRealmSmtpSettingsService
     {
         private readonly AppOptions _options;
 
@@ -52,6 +53,29 @@ namespace Boxty.ServerApp.Modules.UserManagement.Services
         public string GetRealmName()
         {
             return _options.KeycloakAdminClient.Realm;
+        }
+
+        public async Task UpdateAsync(Dictionary<string, string> settings, CancellationToken cancellationToken)
+        {
+            using var httpClient = AuthenticationHttpClientFactory.Create(CreateClientCredentialsFlow());
+            using var realmsApi = ApiClientFactory.Create<RealmsAdminApi>(httpClient);
+            await UpdateRealmSmtpAsync(realmsApi, GetRealmName(), settings, cancellationToken);
+        }
+
+        internal static async Task UpdateRealmSmtpAsync(
+            IRealmsAdminApi realmsApi, string realmName, Dictionary<string, string> settings,
+            CancellationToken cancellationToken)
+        {
+            var realm = await realmsApi.GetAsync(realmName, cancellationToken);
+            var smtpSettings = realm.SmtpServer ?? new Dictionary<string, string>();
+            foreach (var setting in settings)
+            {
+                smtpSettings[setting.Key] = setting.Value;
+            }
+            await realmsApi.PutAsync(realmName, new RealmRepresentation
+            {
+                SmtpServer = smtpSettings
+            }, cancellationToken);
         }
 
         // User operations

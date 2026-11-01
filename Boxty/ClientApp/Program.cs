@@ -51,13 +51,13 @@ builder.Services.AddHttpClient("api", (sp, client) =>
     client.DefaultRequestHeaders.Accept.Clear();
     client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 })
+   .AddHttpMessageHandler<AuthHttpMessageHandler>()
    .AddHttpMessageHandler(sp =>
    {
        var handler = sp.GetRequiredService<AuthorizationMessageHandler>()
            .ConfigureHandler(authorizedUrls: apiOptions.AuthorizedUrls);
        return handler;
-   })
-   .AddHttpMessageHandler<AuthHttpMessageHandler>();
+   });
 
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("api"));
 
