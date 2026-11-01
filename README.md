@@ -85,6 +85,11 @@ Boxty/
 
 ### SMTP Email Configuration
 
+The Email Sending tab loads the saved SMTP configuration into the inline form.
+Save updates that configuration; if none exists, the form creates one and then
+switches to edit mode. Loading errors or multiple configurations are shown as
+errors rather than presenting an empty form that could create a duplicate.
+
 SMTP defaults are seeded into the Settings database by
 [SettingsSeedData](Boxty/ServerApp/Modules/Settings/Infrastructure/Database/SettingsSeedData.cs)
 during module startup, immediately after migrations, following the same pattern

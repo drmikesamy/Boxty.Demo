@@ -3,14 +3,79 @@
 @using Boxty.ClientBase.Components
 @using Boxty.ClientBase.Enums
 @using Boxty.SharedApp.DTOs.Settings
+@using System.Net.Http.Json
+@using System.Net
+@using System.Text.Json
+@inject HttpClient Http
 
-<CrudForm T="SmtpConfigDto" Model="Model" FormMode="FormMode" IsModal="false">
-    <ChildContent>
-        <SmtpConfigForm />
-    </ChildContent>
-</CrudForm>
+@if (isLoading)
+{
+    <MudProgressCircular Indeterminate="true" />
+}
+else if (loadError != null)
+{
+    <MudAlert Severity="MudBlazor.Severity.Error">@loadError</MudAlert>
+}
+else if (Model != null)
+{
+    <CrudForm T="SmtpConfigDto" Model="Model" FormMode="FormMode" IsModal="false"
+              OnAdd="HandleCreated">
+        <ChildContent>
+            <SmtpConfigForm />
+        </ChildContent>
+    </CrudForm>
+}
 
 @code {
-    [Parameter] public SmtpConfigDto Model { get; set; } = new();
+    [Parameter] public SmtpConfigDto? Model { get; set; }
     [Parameter] public FormModeEnum FormMode { get; set; } = FormModeEnum.Create;
+
+    private bool isLoading = true;
+    private string? loadError;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            if (Model != null)
+            {
+                return;
+            }
+
+            using var response = await Http.GetAsync("api/smtpconfig/getall");
+            response.EnsureSuccessStatusCode();
+            var configurations = response.StatusCode == HttpStatusCode.NoContent
+                ? new List<SmtpConfigDto>()
+                : await response.Content.ReadFromJsonAsync<List<SmtpConfigDto>>();
+            if (configurations == null)
+            {
+                loadError = "The server returned an invalid SMTP settings response.";
+                return;
+            }
+
+            if (configurations.Count > 1)
+            {
+                loadError = "Multiple SMTP configurations were found. A single configuration is required for this form.";
+                return;
+            }
+
+            Model = configurations.SingleOrDefault() ?? new SmtpConfigDto();
+            FormMode = configurations.Count == 1 ? FormModeEnum.Edit : FormModeEnum.Create;
+        }
+        catch (HttpRequestException)
+        {
+            loadError = "Unable to load SMTP settings. Please reload the page to try again.";
+        }
+        catch (JsonException)
+        {
+            loadError = "The server returned an invalid SMTP settings response.";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void HandleCreated(SmtpConfigDto model) => FormMode = FormModeEnum.Edit;
+
 }
